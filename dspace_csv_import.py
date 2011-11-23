@@ -57,7 +57,7 @@ class DublinCoreDspaceMetadata:
         writer = csv.writer(output, dialect='excel')
 
         writer.writerow(['Dublin core element', 'Metadata value', 'Comment'])
-        [writer.writerow([tag, '', comment]) for tag, comment in tags.items()]
+        [writer.writerow([tag, '', comment]) for tag, comment in sorted(tags.items())]
         output.seek(0)
 
         return output.read()
