@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import csv, os, os.path, re
+import cgi, csv, os, os.path, re
 from optparse import OptionParser
 
 try:
@@ -62,6 +62,70 @@ class DublinCoreDspaceMetadata:
 
         return output.read()
 
+    def __init__(self):
+        """Create a new Dublin Core object.
+        """
+        self.data = {}
+
+    def __getitem__(self, key):
+        """Get a metadata value.
+
+        Arguments:
+        - `key`: The metadata key in dotted notation
+        """
+        return self.data[key]
+
+    def __setitem__(self, key, value):
+        """Set a metadata value.
+
+        Arguments:
+        - `key`: The metadata key in dotted notation
+        - `value`: The new value for the metadata value
+        """
+        self.data[key] = value
+
+    def load_from_csv(self, csv_file):
+        """Populate this Dublin Core object from CSV data.
+
+        Arguments:
+        - `csv_data`: CSV file representing a Dublin Core object
+        """
+        reader = csv.reader(open(csv_file, 'r'), dialect='excel')
+        reader.next() # Skip the header row
+        for record in reader:
+            key = record[0]
+            value = record[1]
+
+            self.data[key] = value
+
+    def to_xml(self):
+        """Serialize this Dublin Core object to XML.
+
+        There doesn't appear to be an XML writer built into Python (xml.sax
+        is a parser) and I don't want to rely on external libraries like lxml
+        so just build the XML with string operations.
+        """
+        output = ''
+        indent = '  '
+
+        for key, value in self.data.items():
+            components = key.split('.')
+            schema = components[0]
+            element = components[1]
+
+            attributes = 'element="%s"' % cgi.escape(element, quote=True)
+
+            if len(components) > 2:
+                qualifier = components[2]
+                attributes += ' qualifier="%s"' % cgi.escape(qualifier, quote=True)
+
+            output += '''
+%s<dcvalue %s>%s</dcvalue>''' % (indent, attributes, cgi.escape(value, quote=True))
+
+        output = '''<dublin_core>%s
+</dublin_core>''' % output
+        return output
+
 
 def generate_sample_csv_archive(dir, item_count=3):
     """Generate a sample DSpace Simple Archive Format tree using CSV metadata.
@@ -116,6 +180,17 @@ def clean_archive(dir):
                         contents_file.write(f + "\n")
 
                 contents_file.close()
+
+            # Generate XML Dublin Core files from CSV
+            csv_file_name = os.path.join(item_dir, 'dublin_core.csv')
+            xml_file_name = os.path.join(item_dir, 'dublin_core.xml')
+            if os.path.exists(csv_file_name) and not os.path.exists(xml_file_name):
+                metadata = DublinCoreDspaceMetadata()
+                metadata.load_from_csv(csv_file_name)
+
+                xml_file = open(xml_file_name, 'w')
+                xml_file.write(metadata.to_xml())
+                xml_file.close()
 
 
 if __name__ == '__main__':
