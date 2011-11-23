@@ -12,51 +12,55 @@ except ImportError:
 class FileExistsError(Exception): pass
 
 
-# Dublin core tags to be put into generated templates
-expected_tags = {
-    'dc.contributor': None,
-    'dc.contributor.affiliation': None,
-    'dc.contributor.author': None,
-    'dc.contributor.editor': None,
-    'dc.contributor.other': None,
-    'dc.coverage.spatial': None,
-    'dc.date.copyright': None,
-    'dc.date.created': None,
-    'dc.date.issued': None,
-    'dc.description.abstract': None,
-    'dc.description.provenance': None,
-    'dc.description.sponsorship': None,
-    'dc.description.version': None,
-    'dc.format.medium': None,
-    'dc.identifier.citation': None,
-    'dc.identifier.isbn': None,
-    'dc.identifier.issn': None,
-    'dc.language.iso': None,
-    'dc.publisher': None,
-    'dc.relation.ispartofseries': None,
-    'dc.rights': None,
-    'dc.rights.holder': None,
-    'dc.subject': None,
-    'dc.submitter.submitter': None,
-    'dc.title': None,
-    'dc.type': None
-}
-
-
-def generate_csv_template(tags=expected_tags):
-    """Return a CSV metadata template based on the tags passed in.
-    
-    Arguments:
-    - `tags`: A dictionary of tag names to tag comments.
+class DublinCoreDspaceMetadata:
+    """A class representing DSpace-compatible Dublin Core metadata.
     """
-    output = StringIO.StringIO()
-    writer = csv.writer(output, dialect='excel')
 
-    writer.writerow(['Dublin core element', 'Metadata value', 'Comment'])
-    [writer.writerow([tag, '', comment]) for tag, comment in tags.items()]
-    output.seek(0)
+    # Dublin core tags to be put into generated templates
+    expected_tags = {
+        'dc.contributor': None,
+        'dc.contributor.affiliation': None,
+        'dc.contributor.author': None,
+        'dc.contributor.editor': None,
+        'dc.contributor.other': None,
+        'dc.coverage.spatial': None,
+        'dc.date.copyright': None,
+        'dc.date.created': None,
+        'dc.date.issued': None,
+        'dc.description.abstract': None,
+        'dc.description.provenance': None,
+        'dc.description.sponsorship': None,
+        'dc.description.version': None,
+        'dc.format.medium': None,
+        'dc.identifier.citation': None,
+        'dc.identifier.isbn': None,
+        'dc.identifier.issn': None,
+        'dc.language.iso': None,
+        'dc.publisher': None,
+        'dc.relation.ispartofseries': None,
+        'dc.rights': None,
+        'dc.rights.holder': None,
+        'dc.subject': None,
+        'dc.submitter.submitter': None,
+        'dc.title': None,
+        'dc.type': None
+    }
 
-    return output.read()
+    @classmethod
+    def generate_csv_template(cls, tags=expected_tags):
+        """Return a CSV metadata template based on the tags passed in.
+
+        Arguments:
+        - `tags`: A dictionary of tag names to tag comments.
+        """
+        output = StringIO.StringIO()
+        writer = csv.writer(output, dialect='excel')
+
+        writer.writerow(['Dublin core element', 'Metadata value', 'Comment'])
+        [writer.writerow([tag, '', comment]) for tag, comment in tags.items()]
+        output.seek(0)
+
+        return output.read()
 
 
 def generate_sample_csv_archive(dir, item_count=3):
@@ -75,7 +79,7 @@ def generate_sample_csv_archive(dir, item_count=3):
         item_dir = os.path.join(dir, 'item_%03d' % i)
         os.mkdir(item_dir)
         metadata = open(os.path.join(item_dir, 'dublin_core.csv'), 'w')
-        metadata.write(generate_csv_template())
+        metadata.write(DublinCoreDspaceMetadata.generate_csv_template())
 
 
 def clean_archive(dir):
@@ -134,4 +138,4 @@ if __name__ == '__main__':
     elif options.archive_name:
         generate_sample_csv_archive(options.archive_name)
     elif options.generate_template:
-        print generate_csv_template()
+        print DublinCoreDspaceMetadata.generate_csv_template()
