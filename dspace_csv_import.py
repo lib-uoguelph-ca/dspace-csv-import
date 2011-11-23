@@ -205,12 +205,16 @@ if __name__ == '__main__':
     parser.add_option('-c', '--clean-archive', action='store',
                       dest='clean_archive', metavar='DIR',
                       help='Convert CSV to XML and create contents files.')
+    parser.add_option('-n', '--number-of-items', action='store', default=3,
+                      dest='number_of_items', metavar='NUM', type='int',
+                      help='Generate NUM item directories (use with -a).')
     (options, args) = parser.parse_args()
 
 
     if options.clean_archive:
         clean_archive(options.clean_archive)
     elif options.archive_name:
-        generate_sample_csv_archive(options.archive_name)
+        generate_sample_csv_archive(options.archive_name,
+                                    options.number_of_items)
     elif options.generate_template:
         print DublinCoreDspaceMetadata.generate_csv_template()
