@@ -109,17 +109,18 @@ class DublinCoreDspaceMetadata:
         indent = '  '
 
         for key, value in self.data.items():
-            components = key.split('.')
-            schema = components[0]
-            element = components[1]
+            if value != '':
+                components = key.split('.')
+                schema = components[0]
+                element = components[1]
 
-            attributes = 'element="%s"' % cgi.escape(element, quote=True)
+                attributes = 'element="%s"' % cgi.escape(element, quote=True)
 
-            if len(components) > 2:
-                qualifier = components[2]
-                attributes += ' qualifier="%s"' % cgi.escape(qualifier, quote=True)
+                if len(components) > 2:
+                    qualifier = components[2]
+                    attributes += ' qualifier="%s"' % cgi.escape(qualifier, quote=True)
 
-            output += '''
+                output += '''
 %s<dcvalue %s>%s</dcvalue>''' % (indent, attributes, cgi.escape(value, quote=True))
 
         output = '''<dublin_core>%s
