@@ -12,6 +12,46 @@ except ImportError:
 class FileExistsError(Exception): pass
 
 
+class DCMetadataElement:
+    """A DSpace-compatible Dublin Core metadata element.
+    """
+
+    def __init__(self, name, value, language=None):
+        """Create a new DC element.
+
+        Arguments:
+        - `name`: The DC element name, in dotted notation.
+        - `value`: The value for the DC element.
+        - `language`: An optional two-character ISO language code.
+        """
+        self.name = name
+        self.value = value
+        self.language = language
+
+    def _name_components(self):
+        """Return a list of name components split on the dots.
+        """
+        return self.name.split('.')
+
+    def schema(self):
+        """Return the item's schema.
+        """
+        return self._name_components()[0]
+
+    def element(self):
+        """Return the item's element.
+        """
+        return self._name_components()[1]
+
+    def qualifier(self):
+        """Return the item's qualifier or None if it does not have one.
+        """
+        if len(self._name_components()) > 2:
+            return self._name_components()[2]
+
+        return None
+
+
 class DublinCoreDspaceMetadata:
     """A class representing DSpace-compatible Dublin Core metadata.
     """
@@ -56,8 +96,8 @@ class DublinCoreDspaceMetadata:
         output = StringIO.StringIO()
         writer = csv.writer(output, dialect='excel')
 
-        writer.writerow(['Dublin core element', 'Metadata value', 'Comment'])
-        [writer.writerow([tag, '', comment]) for tag, comment in sorted(tags.items())]
+        writer.writerow(['Dublin core element', 'Metadata value', 'Language code', 'Comment'])
+        [writer.writerow([tag, '', '', comment]) for tag, comment in sorted(tags.items())]
         output.seek(0)
 
         return output.read()
@@ -65,7 +105,7 @@ class DublinCoreDspaceMetadata:
     def __init__(self):
         """Create a new Dublin Core object.
         """
-        self.data = {}
+        self.data = []
 
     def __getitem__(self, key):
         """Get a metadata value.
@@ -84,6 +124,14 @@ class DublinCoreDspaceMetadata:
         """
         self.data[key] = value
 
+    def append(self, value):
+        """Append a new metadata element to this DC object.
+
+        Arguments:
+        - `value`: The new value to append.
+        """
+        self.data.append(value)
+
     def load_from_csv(self, csv_file):
         """Populate this Dublin Core object from CSV data.
 
@@ -95,8 +143,13 @@ class DublinCoreDspaceMetadata:
         for record in reader:
             key = record[0]
             value = record[1]
+            language = record[2]
 
-            self.data[key] = value
+            if language == '':
+                language = None
+
+            if value != '':
+                self.append(DCMetadataElement(key, value, language))
 
     def to_xml(self):
         """Serialize this Dublin Core object to XML.
@@ -108,23 +161,22 @@ class DublinCoreDspaceMetadata:
         output = ''
         indent = '  '
 
-        for key, value in self.data.items():
-            if value != '':
-                components = key.split('.')
-                schema = components[0]
-                element = components[1]
+        for item in self.data:
+            attributes = 'element="%s"' % cgi.escape(item.element(), quote=True)
 
-                attributes = 'element="%s"' % cgi.escape(element, quote=True)
+            if item.qualifier():
+                attributes += ' qualifier="%s"' % cgi.escape(item.qualifier(), quote=True)
 
-                if len(components) > 2:
-                    qualifier = components[2]
-                    attributes += ' qualifier="%s"' % cgi.escape(qualifier, quote=True)
+            if item.language:
+                attributes += ' language="%s"' % cgi.escape(item.language, quote=True)
 
-                output += '''
-%s<dcvalue %s>%s</dcvalue>''' % (indent, attributes, cgi.escape(value, quote=True))
+            output += '''
+%s<dcvalue %s>%s</dcvalue>''' % (indent, attributes, cgi.escape(item.value, quote=True))
 
+        # Wrap our metadata tags in a root tag
         output = '''<dublin_core>%s
 </dublin_core>''' % output
+
         return output
 
 
