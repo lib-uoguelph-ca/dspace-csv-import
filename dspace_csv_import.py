@@ -52,7 +52,7 @@ class DCMetadataElement:
         return None
 
 
-class DublinCoreDspaceMetadata:
+class DCMetadata:
     """A class representing DSpace-compatible Dublin Core metadata.
     """
 
@@ -196,7 +196,7 @@ def generate_sample_csv_archive(dir, item_count=3):
         item_dir = os.path.join(dir, 'item_%03d' % i)
         os.mkdir(item_dir)
         metadata = open(os.path.join(item_dir, 'dublin_core.csv'), 'w')
-        metadata.write(DublinCoreDspaceMetadata.generate_csv_template())
+        metadata.write(DCMetadata.generate_csv_template())
 
 
 def clean_archive(dir):
@@ -238,7 +238,7 @@ def clean_archive(dir):
             csv_file_name = os.path.join(item_dir, 'dublin_core.csv')
             xml_file_name = os.path.join(item_dir, 'dublin_core.xml')
             if os.path.exists(csv_file_name) and not os.path.exists(xml_file_name):
-                metadata = DublinCoreDspaceMetadata()
+                metadata = DCMetadata()
                 metadata.load_from_csv(csv_file_name)
 
                 xml_file = open(xml_file_name, 'w')
@@ -270,4 +270,4 @@ if __name__ == '__main__':
         generate_sample_csv_archive(options.archive_name,
                                     options.number_of_items)
     elif options.generate_template:
-        print DublinCoreDspaceMetadata.generate_csv_template()
+        print DCMetadata.generate_csv_template()
