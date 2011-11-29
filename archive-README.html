@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>The Atrium: Bulk importing</title>
+    <style type="text/css">
+      body {
+        font-family: sans-serif;
+        width: 600px;
+      }
+      .code {
+        background: #eee;
+        border: 1px solid #ccc;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <h1>The Atrium: Bulk importing</h1>
+
+    <h2>Introduction</h2>
+
+    <p>This directory is set up in a modified DSpace Simple Archive Format. It can be populated with files and metadata and then imported into the Atrium.</p>
+
+    <h2>Files</h2>
+ 
+    <p>Each item has its own numbered directory, e.g. <span class="code">item_123/</span>. Place files for an item into the directory.</p>
+
+    <p>Note that items can contain multiple files. For more information on the logical structure of The Atrium contact <a href="mailto:carolp@uoguelph.ca">Carol Perry</a>.</p>
+
+    <h2>Metadata</h2>
+
+    <p>For each item, update the <span class="code">dublin_core.csv</span> file that should already be in the directory. This can be done using Excel, but be careful not to change the file format when you save it.</p>
+
+    <p>Additional metadata lines may be added to the CSV file as long as the elements are supported by the Atrium. Some elements can be included multiple times. An element that is often repeated is <span class="code">dc.subject</span>, which is used for keywords. To include an element multiple times simply copy the appropriate row, paste a copy into the CSV document, and modify the value as necessary.</p>
+
+    <h3>Language</h3>
+
+    <p>The <span class="code">dc.language.iso</span> metadata value should be set to the code for the main language of an item. Other metadata tags may be in a different language, e.g. there could be a <span class="code">dc.title.alternate</span> tag that includes a French title. If this is the case, please add the appropriate language code to the Language column of that tag.</p>
+
+    <p>English and French language codes are as listed below. For other languages, please refer to the 639-1 column (two-character codes) on <a href="http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">the ISO 639 Wikipedia page</a>.</p>
+
+    <h4>ISO language codes for English and French</h4>
+
+    <dl>
+      <dt>en</dt>
+      <dd>English</dd>
+      <dt>fr</dt>
+      <dd>French</dd>
+    </dl>
+
+    <h2>Submitting</h2>
+
+    <p>Once all of the files are in place and the metadata has been set up please zip the entire directory up and send it back.</p>
+
+  </body>
+</html>

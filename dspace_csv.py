@@ -195,6 +195,8 @@ def generate_sample_csv_archive(dir, src=None, item_count=3):
     # TODO: Should really try/except here
     os.mkdir(dir)
 
+    shutil.copy('archive-README.html', os.path.join(dir, 'README.html'))
+
     for i in range(1, item_count+1):
         item_dir = os.path.join(dir, 'item_%03d' % i)
         os.mkdir(item_dir)
