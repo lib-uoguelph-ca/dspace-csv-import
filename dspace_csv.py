@@ -141,15 +141,16 @@ class DCMetadata:
         reader = csv.reader(open(csv_file, 'r'), dialect='excel')
         reader.next() # Skip the header row
         for record in reader:
-            key = record[0]
-            value = record[1]
-            language = record[2]
+            if len(record) >= 3:
+                key = record[0]
+                value = record[1]
+                language = record[2]
 
-            if language == '':
-                language = None
+                if language == '':
+                    language = None
 
-            if value != '':
-                self.append(DCMetadataElement(key, value, language))
+                if value != '':
+                    self.append(DCMetadataElement(key, value, language))
 
     def to_xml(self):
         """Serialize this Dublin Core object to XML.
