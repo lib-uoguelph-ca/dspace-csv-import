@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import cgi, csv, os, os.path, re
+import cgi, csv, os, os.path, re, shutil
 from optparse import OptionParser
 
 try:
@@ -180,11 +180,13 @@ class DCMetadata:
         return output
 
 
-def generate_sample_csv_archive(dir, item_count=3):
+def generate_sample_csv_archive(dir, src=None, item_count=3):
     """Generate a sample DSpace Simple Archive Format tree using CSV metadata.
 
     Arguments:
     - `dir`: The directory in which to store the archive.
+    - `src`: A preformatted CSV metadata sample to be used for each item.
+    - `item_count`: The number of item subdirectories to create.
     """
     if os.path.exists(dir):
         raise FileExistsError, dir
@@ -195,8 +197,13 @@ def generate_sample_csv_archive(dir, item_count=3):
     for i in range(1, item_count+1):
         item_dir = os.path.join(dir, 'item_%03d' % i)
         os.mkdir(item_dir)
-        metadata = open(os.path.join(item_dir, 'dublin_core.csv'), 'w')
-        metadata.write(DCMetadata.generate_csv_template())
+        metadata_file_name = os.path.join(item_dir, 'dublin_core.csv')
+
+        if src is not None:
+            shutil.copy(src, metadata_file_name)
+        else:
+            metadata = open(metadata_file_name, 'w')
+            metadata.write(DCMetadata.generate_csv_template())
 
 
 def clean_archive(dir):
@@ -255,6 +262,9 @@ if __name__ == '__main__':
     parser.add_option('-a', '--generate-sample-archive', action='store',
                       dest='archive_name', metavar='DIR',
                       help='Generate a sample archive in DIR')
+    parser.add_option('-s', '--source', action='store', default=None,
+                      dest='metadata_src', metavar='FILE',
+                      help='Use FILE as sample metadata for each item')
     parser.add_option('-c', '--clean-archive', action='store',
                       dest='clean_archive', metavar='DIR',
                       help='Convert CSV to XML and create contents files.')
@@ -268,6 +278,7 @@ if __name__ == '__main__':
         clean_archive(options.clean_archive)
     elif options.archive_name:
         generate_sample_csv_archive(options.archive_name,
-                                    options.number_of_items)
+                                    src=options.metadata_src,
+                                    item_count=options.number_of_items)
     elif options.generate_template:
         print DCMetadata.generate_csv_template()
