@@ -58,32 +58,35 @@ class DCMetadata:
 
     # Dublin core tags to be put into generated templates
     expected_tags = {
-        'dc.contributor': None,
-        'dc.contributor.affiliation': None,
-        'dc.contributor.author': None,
-        'dc.contributor.editor': None,
-        'dc.contributor.other': None,
-        'dc.coverage.spatial': None,
-        'dc.date.copyright': None,
-        'dc.date.created': None,
-        'dc.date.issued': None,
-        'dc.description.abstract': None,
-        'dc.description.provenance': None,
-        'dc.description.sponsorship': None,
-        'dc.description.version': None,
-        'dc.format.medium': None,
-        'dc.identifier.citation': None,
-        'dc.identifier.isbn': None,
-        'dc.identifier.issn': None,
-        'dc.language.iso': None,
-        'dc.publisher': None,
-        'dc.relation.ispartofseries': None,
-        'dc.rights': None,
-        'dc.rights.holder': None,
-        'dc.subject': None,
-        'dc.submitter.submitter': None,
-        'dc.title': None,
-        'dc.type': None
+        'dc.contributor.affiliation': "Creator's affiliation. Optional. Repeatable.",
+        'dc.contributor.author': 'Author. Optional. Repeatable.',
+        'dc.contributor.editor': 'Editor. Optional. Repeatable.',
+        'dc.contributor.other': 'Other contributor. Optional. Repeatable.',
+        'dc.coverage.spatial': 'Spatial characteristics of the resource. Optional. Repeatable.',
+        'dc.date.created': 'Date of creation of the resource. Optional. Non-repeatable.',
+
+        # Date issued is added by DSpace
+        # 'dc.date.issued': None,
+
+        'dc.description.abstract': 'Abstract. Optional. Non-repeatable.',
+        'dc.description.provenance': 'A statement of any changes in ownership and custody of the resource since its creation that are significant for its authenticity, integrity, and interpretation. Optional. Repeatable.',
+        'dc.description.sponsorship': 'Names of sponsors and/or funding codes. Optional. Non-repeatable.',
+        'dc.format.medium': 'The material or physical carrier of the resource. Optional. Repeatable.',
+        'dc.identifier.citation': 'Citation of previous publication. Optional. Non-repeatable.',
+        'dc.identifier.isbn': 'International Standard book number. Optional. Non-repeatable.',
+        'dc.identifier.issn': 'International Standard Serial Number. Optional. Non-repeatable.',
+        'dc.language.iso': 'Language of the main content. Optional. Non-repeatable.',
+        'dc.publisher': 'Previous publisher. Optional. Non-repeatable.',
+        'dc.relation.ispartofseries': 'Series or report number. Optional. Repeatable.',
+        'dc.rights': 'Information about rights held in and over the resource. Optional. Repeatable.',
+
+        # Assuming this is the same as rightsHolder in the DC spec
+        'dc.rights.holder': 'A person or organization owning or managing rights over the resource. Optional. Repeatable.',
+        'dc.subject': 'The topic of the resource. Typically keywords. Optional. Repeatable.',
+
+        'dc.title': 'A name given to the resource. Required. Non-repeatable.',
+        'dc.title.alternative': 'An alternative name for the resource. Optional. Repeatable.',
+        'dc.type': 'The nature or genre of the resource: Animation; Article; Book; Book chapter; Dataset; Learning Object; Image; Image, 3-D; Major Paper; Map; Musical Score; Plan or blueprint; Preprint; Presentation; Recording, acoustical; Recording, musical; Recording, oral; Report; Software; Technical Report; Thesis; Video; Working Paper; Other. Optional. Repeatable.'
     }
 
     @classmethod
