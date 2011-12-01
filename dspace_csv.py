@@ -64,9 +64,10 @@ class DCMetadata:
         'dc.contributor.other': 'Other contributor. Optional. Repeatable.',
         'dc.coverage.spatial': 'Spatial characteristics of the resource. Optional. Repeatable.',
         'dc.date.created': 'Date of creation of the resource. Optional. Non-repeatable.',
+        'dc.date.copyright': 'Date of copyright. Optional. Non-repeatable.',
 
         # Date issued is added by DSpace
-        # 'dc.date.issued': None,
+        'dc.date.issued': 'Date of previous issue. Note that an additional value will be automatically added for the date and time of the import. Optional. Non-repeatable.',
 
         'dc.description.abstract': 'Abstract. Optional. Non-repeatable.',
         'dc.description.provenance': 'A statement of any changes in ownership and custody of the resource since its creation that are significant for its authenticity, integrity, and interpretation. Optional. Repeatable.',
