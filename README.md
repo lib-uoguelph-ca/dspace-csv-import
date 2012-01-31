@@ -94,7 +94,19 @@ directory containing these files: if they exist they will not be overwritten.
 ## Import into DSpace
 
 Once the clean script has been successfully run the archive directory should
-be ready for DSpace to import it. Something like
+be almost ready for DSpace to import it.
+
+If it is not already, the directory should be placed in a location that the
+`dspace` user can access it *and write to the directory*. I recommend putting
+the directory into `/home/dspace/imported-data/` and leaving it there so the
+mapfile can be easily found if it is needed later, e.g. to remove or modify
+imported data. One way to do this is
+
+    sudo cp -r [directory-name] /home/dspace/imported-data/
+    sudo chown -R dspace:dspace /home/dspace/imported-data/[directory-name]
+
+Now we are ready to use the `import` command that comes with DSpace. Be sure
+to run this command as the `dspace` user. Something like
 
     [dspace]/bin/import --add --eperson=[importer's email address] --collection=[collection handle] --source=[directory-name] --mapfile=[directory-name]/mapfile
 
